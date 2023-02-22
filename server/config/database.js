@@ -1,7 +1,7 @@
 import { set, connect } from "mongoose";
 const { MONGO_URI } = process.env;
 
-set('strictQuery', true);
+set("strictQuery", true);
 
 async function dbConnect() {
     // Connecting to the database

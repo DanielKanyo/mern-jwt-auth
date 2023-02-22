@@ -5,6 +5,7 @@ import User from "./model/user.js";
 import nodeMailer from "nodemailer";
 import auth from "./middleware/auth.js";
 import { makeToken } from "./util/token.js";
+import jwt from "jsonwebtoken";
 
 dbConnect();
 
@@ -14,17 +15,17 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const { API_PORT } = process.env;
+const { API_PORT, BASE_URL } = process.env;
 const PORT = process.env.PORT || API_PORT;
 
 // Register
 app.post("/register", async (req, res) => {
     try {
         // Get user input
-        const { first_name, last_name, email } = req.body;
+        const { name, email } = req.body;
 
         // Validate user input
-        if (!(email && first_name && last_name)) {
+        if (!(email && name)) {
             res.status(400).send("All input is required");
         }
 
@@ -37,8 +38,7 @@ app.post("/register", async (req, res) => {
 
         // Create user in our database
         const user = await User.create({
-            first_name,
-            last_name,
+            name,
             email: email.toLowerCase(), // sanitize: convert email to lowercase
         });
 
@@ -90,7 +90,7 @@ app.post("/login", (req, res) => {
         from: "Madelyn Herzog",
         html: emailTemplate({
             email,
-            link: `http://localhost:${PORT}/account?token=${token}`,
+            link: `${BASE_URL}:${PORT}/account?token=${token}`,
         }),
         subject: "Link to login...",
         to: email,
