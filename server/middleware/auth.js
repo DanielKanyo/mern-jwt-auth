@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+import { verify } from "jsonwebtoken";
 
 const verifyToken = (req, res, next) => {
     const token = req.body.token || req.query.token || req.headers["x-access-token"];
@@ -8,7 +8,7 @@ const verifyToken = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+        const decoded = verify(token, process.env.TOKEN_KEY);
 
         req.user = decoded;
     } catch (err) {
@@ -18,4 +18,4 @@ const verifyToken = (req, res, next) => {
     return next();
 };
 
-module.exports = verifyToken;
+export default verifyToken;

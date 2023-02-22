@@ -1,22 +1,21 @@
-require("./config/database").connect();
+import express from "express";
+import cors from "cors";
+import dbConnect from "./config/database.js";
+import User from "./model/user.js";
+import nodeMailer from "nodemailer";
+import auth from "./middleware/auth.js";
+import { makeToken } from "./util/token.js";
 
-const express = require("express");
-const cors = require("cors");
-const jwt = require("jsonwebtoken");
+dbConnect();
+
 const app = express();
-const tokenUtil = require("./util/token");
-const nodeMailer = require("nodemailer");
-const auth = require("./middleware/auth");
-
-const { API_PORT } = process.env;
-const port = process.env.PORT || API_PORT;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Importing user context
-const User = require("./model/user");
+const { API_PORT } = process.env;
+const PORT = process.env.PORT || API_PORT;
 
 // Register
 app.post("/register", async (req, res) => {
@@ -85,13 +84,13 @@ app.post("/login", (req, res) => {
         return res.status(400).send("You did not enter a valid email address...");
     }
 
-    const token = tokenUtil.makeToken(email);
+    const token = makeToken(email);
 
     const mailOptions = {
         from: "Madelyn Herzog",
         html: emailTemplate({
             email,
-            link: `http://localhost:${port}/account?token=${token}`,
+            link: `http://localhost:${PORT}/account?token=${token}`,
         }),
         subject: "Link to login...",
         to: email,
@@ -111,4 +110,4 @@ app.get("/account", auth, (req, res) => {
     res.status(200).send("User has been validated...");
 });
 
-module.exports = app;
+export default app;

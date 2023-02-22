@@ -1,10 +1,12 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
+
+const { sign } = jwt;
 
 // Generate token
-exports.makeToken = (email) => {
-    return jwt.sign(
+export function makeToken(email) {
+    return sign(
         { email },
         process.env.TOKEN_KEY,
         { expiresIn: "2h" }
     );
-};
+}

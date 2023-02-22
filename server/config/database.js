@@ -1,12 +1,11 @@
-const mongoose = require("mongoose");
+import { set, connect } from "mongoose";
 const { MONGO_URI } = process.env;
 
-mongoose.set('strictQuery', true);
+set('strictQuery', true);
 
-exports.connect = () => {
+async function dbConnect() {
     // Connecting to the database
-    mongoose
-        .connect(MONGO_URI)
+    connect(MONGO_URI)
         .then(() => {
             console.log("Successfully connected to database");
         })
@@ -15,4 +14,6 @@ exports.connect = () => {
             console.error(error);
             process.exit(1);
         });
-};
+}
+
+export default dbConnect;

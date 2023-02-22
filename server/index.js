@@ -1,14 +1,13 @@
-// Set up global configuration access
-require("dotenv").config();
+import 'dotenv/config';
+import { createServer } from "http";
+import app from "./app.js";
 
-const http = require("http");
-const app = require("./app");
-const server = http.createServer(app);
+const server = createServer(app);
 
 const { API_PORT } = process.env;
-const port = process.env.PORT || API_PORT;
+const PORT = process.env.PORT || API_PORT;
 
 // Server listening
-server.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
