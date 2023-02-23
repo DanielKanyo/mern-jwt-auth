@@ -17,6 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 
 const { API_PORT, BASE_URL } = process.env;
 const PORT = process.env.PORT || API_PORT;
+const CLIENT_PORT = process.env.VITE_CLIENT_PORT;
 
 // Register
 app.post("/register", async (req, res) => {
@@ -90,7 +91,7 @@ app.post("/login", (req, res) => {
         from: "Madelyn Herzog",
         html: emailTemplate({
             email,
-            link: `${BASE_URL}:${PORT}/authenticate?token=${token}`,
+            link: `${BASE_URL}:${CLIENT_PORT}/validation?token=${token}`,
         }),
         subject: "Link to login...",
         to: email,
