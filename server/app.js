@@ -90,7 +90,7 @@ app.post("/login", (req, res) => {
         from: "Madelyn Herzog",
         html: emailTemplate({
             email,
-            link: `${BASE_URL}:${PORT}/account?token=${token}`,
+            link: `${BASE_URL}:${PORT}/authenticate?token=${token}`,
         }),
         subject: "Link to login...",
         to: email,
@@ -106,7 +106,7 @@ app.post("/login", (req, res) => {
 });
 
 // Validate account
-app.get("/account", auth, (req, res) => {
+app.get("/authenticate", auth, (req, res) => {
     res.status(200).send("User has been validated...");
 });
 
