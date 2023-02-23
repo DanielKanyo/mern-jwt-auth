@@ -43,15 +43,6 @@ app.post("/register", async (req, res) => {
             email: email.toLowerCase(), // sanitize: convert email to lowercase
         });
 
-        // Create token
-        const token = jwt.sign(
-            { email },
-            process.env.TOKEN_KEY,
-            { expiresIn: "2h" }
-        );
-        // Save user token
-        user.token = token;
-
         // Return new user
         res.status(201).json(user);
     } catch (err) {

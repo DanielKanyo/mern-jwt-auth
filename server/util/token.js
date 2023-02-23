@@ -7,6 +7,6 @@ export function makeToken(email) {
     return sign(
         { email },
         process.env.TOKEN_KEY,
-        { expiresIn: "2h" }
+        { expiresIn: "60s" }
     );
 }

@@ -29,7 +29,7 @@ const Login = () => {
             .catch((error) => {
                 console.log(error);
             });
-    }
+    };
 
     return (
         <div>
@@ -43,7 +43,7 @@ const Login = () => {
             </form>
             <p>
                 {
-                    tokenSent ? 'Login token sent to your e-mail address...' : ''
+                    tokenSent ? "Login token sent to your e-mail address..." : ""
                 }
             </p>
         </div>

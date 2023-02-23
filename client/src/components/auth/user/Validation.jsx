@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Validation = () => {
+const Validation = ({ setAutheticated, setToken }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,10 +26,13 @@ const Validation = () => {
         axios(configuration)
             .then((result) => {
                 console.log(result);
-                navigate("/");
+                setToken(token);
+                setAutheticated(true);
+                navigate("/home");
             })
             .catch((error) => {
                 console.log(error);
+                navigate("/");
             });
     }, []);
 
