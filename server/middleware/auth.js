@@ -1,10 +1,10 @@
 import { verify } from "jsonwebtoken";
 
-const verifyToken = (req, res, next) => {
-    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+const auth = (req, res, next) => {
+    const token = req.body.token || req.query.token || req.header('sessionToken');
 
     if (!token) {
-        return res.status(403).send("A token is required for authentication...");
+        return res.status(403).send("Forbidden...");
     }
 
     try {
@@ -12,10 +12,10 @@ const verifyToken = (req, res, next) => {
 
         req.user = decoded;
     } catch (err) {
-        return res.status(401).send("Invalid token...");
+        return res.status(401).send("Unauthorized...");
     }
 
     return next();
 };
 
-export default verifyToken;
+export default auth;

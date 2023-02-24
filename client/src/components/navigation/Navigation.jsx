@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 
-const Navigation = ({ authenticated, setAutheticated, setToken }) => {
+const Navigation = ({ authenticated, setAutheticated }) => {
     const handleLogout = () => {
+        sessionStorage.clear();
         setAutheticated(false);
-        setToken("");
     }
 
     return (

@@ -8,8 +8,8 @@ import Register from "./components/auth/register/Register";
 import Landing from "./components/landing/Landing";
 import Home from "./components/home/Home";
 
-const ProtectedRoute = ({ authenticated, token, redirectPath = "/login" }) => {
-    if (!authenticated || !token) {
+const ProtectedRoute = ({ authenticated, redirectPath = "/login" }) => {
+    if (!authenticated) {
         return <Navigate to={redirectPath} replace />;
     }
 
@@ -19,9 +19,18 @@ const ProtectedRoute = ({ authenticated, token, redirectPath = "/login" }) => {
 const App = () => {
     const navigate = useNavigate();
     const [authenticated, setAutheticated] = useState(false);
-    const [token, setToken] = useState("");
 
     useEffect(() => {
+        // Check if session token is available
+        const sessionToken = sessionStorage.getItem("sessionToken");
+
+        if (sessionToken) {
+            setAutheticated(true);
+            navigate("/home");
+            return;
+        }
+
+        // If session token not available try to authenticate with login token
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
 
@@ -34,24 +43,19 @@ const App = () => {
 
         axios({ method: "get", url: `${baseUrl}:${port}/authenticate?token=${token}` })
             .then((result) => {
-                console.log(result);
-                setToken(token);
+                sessionStorage.setItem("sessionToken", result.data);
+
                 setAutheticated(true);
                 navigate("/home");
             })
-            .catch((error) => {
-                console.log(error);
+            .catch(() => {
                 navigate("/");
             });
     }, []);
 
     return (
         <div>
-            <Navigation
-                authenticated={authenticated}
-                setAutheticated={setAutheticated}
-                setToken={setToken}
-            />
+            <Navigation authenticated={authenticated} setAutheticated={setAutheticated} />
 
             <hr />
 
@@ -60,7 +64,7 @@ const App = () => {
                 <Route path="/register" element={<Register />}></Route>
                 <Route path="/login" element={<Login />}></Route>
 
-                <Route element={<ProtectedRoute authenticated={authenticated} token={token} />}>
+                <Route element={<ProtectedRoute authenticated={authenticated} />}>
                     <Route path="/home" element={<Home />} />
                 </Route>
             </Routes>

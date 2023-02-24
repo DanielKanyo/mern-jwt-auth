@@ -97,7 +97,19 @@ app.post("/login", (req, res) => {
 
 // Validate account
 app.get("/authenticate", auth, (req, res) => {
-    res.status(200).send("User has been validated...");
+    const { email } = req.user;
+    const sessionToken = makeToken(email, "24h");
+
+    res.status(200).send(sessionToken);
+});
+
+// Get account
+app.get("/account", auth, async (req, res) => {
+    const { email } = req.user;
+
+    const user = await User.findOne({ email });
+
+    res.status(200).send(user);
 });
 
 export default app;
