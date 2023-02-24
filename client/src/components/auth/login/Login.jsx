@@ -11,24 +11,16 @@ const Login = () => {
         const baseUrl = import.meta.env.VITE_BASE_URL;
         const port = import.meta.env.VITE_API_PORT;
 
-        const email = emailRef.current.value;
-
-        const configuration = {
+        axios({
             method: "post",
             url: `${baseUrl}:${port}/login`,
-            data: {
-                email,
-            },
-        };
-
-        axios(configuration)
-            .then((result) => {
-                setTokenSent(true);
-                console.log(result);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+            data: { email: emailRef.current.value },
+        }).then((result) => {
+            setTokenSent(true);
+            console.log(result);
+        }).catch((error) => {
+            console.log(error);
+        });
     };
 
     return (

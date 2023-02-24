@@ -5,6 +5,7 @@ import User from "./model/user.js";
 import nodeMailer from "nodemailer";
 import auth from "./middleware/auth.js";
 import { makeToken } from "./util/token.js";
+import { emailTemplateGenerator } from "./util/email.js";
 
 dbConnect();
 
@@ -58,14 +59,6 @@ const transport = nodeMailer.createTransport({
     }
 });
 
-const emailTemplate = ({ email, link }) => {
-    return `
-        <h2>Hey ${email}</h2>
-        <p>Here's the login link you just requested:</p>
-        <a href="${link}">Click here to login</p>
-    `;
-};
-
 // Login
 app.post("/login", (req, res) => {
     const { email } = req.body;
@@ -78,7 +71,7 @@ app.post("/login", (req, res) => {
 
     const mailOptions = {
         from: "Madelyn Herzog",
-        html: emailTemplate({
+        html: emailTemplateGenerator({
             email,
             link: `${BASE_URL}:${CLIENT_PORT}?token=${token}`,
         }),

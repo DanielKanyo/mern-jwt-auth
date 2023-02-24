@@ -27,9 +27,7 @@ const Home = () => {
 
     return (
         <div>
-            <div>
-                Home (Only for logged in users)
-            </div>
+            <div>Home (Only for logged in users)</div>
 
             <br />
 
