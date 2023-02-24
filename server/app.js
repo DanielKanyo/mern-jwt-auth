@@ -5,7 +5,6 @@ import User from "./model/user.js";
 import nodeMailer from "nodemailer";
 import auth from "./middleware/auth.js";
 import { makeToken } from "./util/token.js";
-import jwt from "jsonwebtoken";
 
 dbConnect();
 
@@ -15,8 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const { API_PORT, BASE_URL } = process.env;
-const PORT = process.env.PORT || API_PORT;
+const { BASE_URL } = process.env;
 const CLIENT_PORT = process.env.VITE_CLIENT_PORT;
 
 // Register
@@ -76,13 +74,13 @@ app.post("/login", (req, res) => {
         return res.status(400).send("You did not enter a valid email address...");
     }
 
-    const token = makeToken(email);
+    const token = makeToken(email, "60s");
 
     const mailOptions = {
         from: "Madelyn Herzog",
         html: emailTemplate({
             email,
-            link: `${BASE_URL}:${CLIENT_PORT}/validation?token=${token}`,
+            link: `${BASE_URL}:${CLIENT_PORT}?token=${token}`,
         }),
         subject: "Link to login...",
         to: email,

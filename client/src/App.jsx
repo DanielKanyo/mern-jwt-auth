@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Routes, Route, Navigate, Outlet, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import Navigation from "./components/navigation/Navigation";
 import Login from "./components/auth/login/Login";
 import Register from "./components/auth/register/Register";
 import Landing from "./components/landing/Landing";
 import Home from "./components/home/Home";
-import Validation from "./components/auth/user/Validation";
 
 const ProtectedRoute = ({ authenticated, token, redirectPath = "/login" }) => {
     if (!authenticated || !token) {
@@ -17,8 +17,33 @@ const ProtectedRoute = ({ authenticated, token, redirectPath = "/login" }) => {
 };
 
 const App = () => {
+    const navigate = useNavigate();
     const [authenticated, setAutheticated] = useState(false);
     const [token, setToken] = useState("");
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+
+        if (!token) {
+            return;
+        }
+
+        const baseUrl = import.meta.env.VITE_BASE_URL;
+        const port = import.meta.env.VITE_API_PORT;
+
+        axios({ method: "get", url: `${baseUrl}:${port}/authenticate?token=${token}` })
+            .then((result) => {
+                console.log(result);
+                setToken(token);
+                setAutheticated(true);
+                navigate("/home");
+            })
+            .catch((error) => {
+                console.log(error);
+                navigate("/");
+            });
+    }, []);
 
     return (
         <div>
@@ -34,10 +59,6 @@ const App = () => {
                 <Route path="/" element={<Landing />}></Route>
                 <Route path="/register" element={<Register />}></Route>
                 <Route path="/login" element={<Login />}></Route>
-                <Route
-                    path="/validation"
-                    element={<Validation setAutheticated={setAutheticated} setToken={setToken} />}
-                ></Route>
 
                 <Route element={<ProtectedRoute authenticated={authenticated} token={token} />}>
                     <Route path="/home" element={<Home />} />
